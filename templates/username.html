@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Username Generator | Homepage</title>
+    <style>
+        #Heading {
+            text-align: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 4em;
+            background-color: aqua;
+            margin: 0px;
+            padding-top: 1em;
+            padding-bottom: 1em;
+        }
+        
+        #Description {
+            text-align: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 1em;
+            color: #0000008d;
+            margin-top: 3em;
+        }
+
+        #Username {
+            text-align: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 2em;
+        }
+
+        .Normalbutton {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 1em;
+        }
+
+        #Reloadbuttondiv {
+            text-align: center;
+        }
+
+        #Pastbuttondiv {
+            text-align: center;
+            margin-top: 2em;
+        }
+
+        #Aboutbuttondiv {
+            text-align: center;
+            margin-top: 2em;
+        }
+
+    </style>
+</head>
+<body>
+    <h1 id="Heading">Random Username Generator</h1>
+    <p id="Description">This webpage will generate a random username.</p>
+    <p id="Username">Your Username: {{ context[0] }}</p>
+    <div id="Reloadbuttondiv">
+        <button onclick="window.location.href='http://127.0.0.1:8000';" class="Normalbutton">New Username</button>
+    </div>
+    <div id="Pastbuttondiv">
+        <button onclick="window.location.href='http://127.0.0.1:8000/past';" class="Normalbutton">Past Usernames</button>
+    </div>
+    <div id="Aboutbuttondiv">
+        <button onclick="window.location.href='http://127.0.0.1:8000/past';" class="Normalbutton">About</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Party List</h1>
+
+<table class="table">
+    <tr>
+        <th>First Name</th>
+        <th>Age</th>
+        <th>Attending</th>
+        <th>Action</th>
+    </tr>
+    {%  for  person in context %}
+    <tr>
+        <td>{{  person.first_name  }}</td>
+        <td>{{  person.age  }}</td>
+        <td>{{  person.is_attending  }}</td>
+        <td>
+            <a href="{{ url_for('delete', id=person.id) }}" class="btn btn-danger">Delete</a>
+            <a href="{{ url_for('update', id=person.id) }}" class="btn btn-success">Edit</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
