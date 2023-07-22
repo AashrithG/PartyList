@@ -1,3 +1,5 @@
+import os
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, flash
 from utilties.authentication import hash_password
 from flask_sqlalchemy import SQLAlchemy
@@ -6,7 +8,14 @@ from utilties.generator import attendees
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 
+# CONSTANTS
+UPLOAD_FOLDER = "static/image"
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+
 app = Flask(__name__)
+
+# CONFIGURATION
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.secret_key = '8b2f13e073221a2a268594462951a9bdab1ff7a6bff30761552f6c037bcb46df'
 
@@ -43,11 +52,14 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    profile_pic = db.Column(db.String, nullable=True)
+    # profile_pic = db.Column(db.String, nullable=True)
 
 @app.before_first_request
 def create_database():
      db.create_all()
+
+def allowed_file(filename):
+    return '.' in filename and filename.rspilt('.',1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Authentication Mechanism
 @app.route('/register', methods=['GET', 'POST'])
@@ -151,9 +163,21 @@ def delete(id):
     flash('User deleted', category='message')
     return redirect(url_for('home'))
 
-@app.route("/profile")
+@app.route("/profile", methods=['GET', 'POST'])
 def profile_page():
     """This is a profile page"""
+    if request.method == 'POST':
+        # check in the filename extension is allowed
+        if 'file' not in request.files:
+            return 'File not allowed'
+        file = request.files['file']
+        if file.filename == '':
+            return 'No file submitted'
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config[UPLOAD_FOLDER], filename))
+            flash('File uploaded')
+            return redirect(url_for('profile_page'))
     # upload form
     # create a uuid
     # combine uuid and filename
