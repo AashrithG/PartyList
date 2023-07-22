@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Profile</h1>
+
+{% if current_user.is_authenticated %}
+
+<div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="{{ url_for('static', filename='profile/profile.jpg') }}" alt="profile">
+    <div class="card-body">
+      <h5 class="card-title">Profile</h5>
+      <p class="card-text">First Name: {{ current_user.first_name }}</p>
+      <p class="card-text">Last Name: {{ current_user.last_name }}</p>
+      <p class="card-text">Email: {{ current_user.email }}</p>
+      <a href="#" class="btn btn-primary">Edit</a>
+    </div>
+  </div>
+{% else %}
+
+<p>You have to be authenicated</p>
+
+{% endif %}
+
+{% endblock %}

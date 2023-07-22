@@ -43,6 +43,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
+    profile_pic = db.Column(db.String, nullable=True)
 
 @app.before_first_request
 def create_database():
@@ -76,7 +77,8 @@ def login():
         verify = pbkdf2_sha256.verify(password, user.password)
         if pbkdf2_sha256.verify(password, user.password) == True:
             login_user(user)
-            return "Success"
+            flash("User logged in", category='message')
+            return redirect(url_for('home'))
         else:
             return "Failure"
     return render_template('login.html')
@@ -85,7 +87,8 @@ def login():
 def logout():
     """This route logs out the user"""
     logout_user()
-    return "You are logged out"
+    flash("User logged out", category='message')
+    return redirect(url_for('home'))
 
 @app.route('/protected')
 @login_required
@@ -148,6 +151,16 @@ def delete(id):
     flash('User deleted', category='message')
     return redirect(url_for('home'))
 
+@app.route("/profile")
+def profile_page():
+    """This is a profile page"""
+    # upload form
+    # create a uuid
+    # combine uuid and filename
+    # store filename in database
+    # store file in static folder
+    return render_template("profile.html")
+
 # Custom Commands
 @app.cli.command("create-user")
 @click.argument("number")
@@ -162,6 +175,12 @@ def create_user(number):
         db.session.add(person)
         db.session.commit()
     return f"A total of {number} people created"
+
+# Gallery
+@app.route('/gallery')
+def gallery():
+    """Gallery page"""
+    return render_template("gallery.html")
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8000, debug=True)
