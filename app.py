@@ -1,4 +1,5 @@
 import os
+from uuid import uuid1
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, flash
 from utilties.authentication import hash_password
@@ -9,13 +10,15 @@ from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 
 # CONSTANTS
-UPLOAD_FOLDER = "static/image"
+UPLOAD_FOLDER = "static/profile"
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+
 
 app = Flask(__name__)
 
 # CONFIGURATION
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #16 MB
 
 app.secret_key = '8b2f13e073221a2a268594462951a9bdab1ff7a6bff30761552f6c037bcb46df'
 
@@ -59,7 +62,7 @@ def create_database():
      db.create_all()
 
 def allowed_file(filename):
-    return '.' in filename and filename.rspilt('.',1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Authentication Mechanism
 @app.route('/register', methods=['GET', 'POST'])
@@ -205,6 +208,22 @@ def create_user(number):
 def gallery():
     """Gallery page"""
     return render_template("gallery.html")
+
+@app.route('/upload', methods=["GET", "POST"])
+def upload():
+    """Upload File"""
+    if request.method == 'POST':
+        filename = request.files['file']
+        # File is empty
+        if filename.filename == '':
+            return 'file is empty'
+        if filename and allowed_file(filename.filename):
+            myuuid = str(uuid1())
+            file = f'{myuuid}-{filename.filename}'
+            filename.save(os.path.join(app.config['UPLOAD_FOLDER'], file))
+            print(filename)
+            return "File Uploaded"
+    return render_template("upload.html")
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8000, debug=True)
